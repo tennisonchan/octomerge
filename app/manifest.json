@@ -1,0 +1,44 @@
+{
+  "name": "__MSG_appName__",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "__MSG_appDescription__",
+  "icons": {
+    "16": "images/icon-16.png",
+    "128": "images/icon-128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "scripts": [
+      "bower_components/jquery/dist/jquery.min.js",
+      "scripts/chromereload.js",
+      "scripts/storage.js",
+      "scripts/background.js"
+    ]
+  },
+  "permissions": [
+    "tabs",
+    "*://api.github.com/*",
+    "http://*/*",
+    "https://*/*",
+    "background",
+    "storage"
+  ],
+  "options_ui": {
+    "page": "options.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "bower_components/jquery/dist/jquery.min.js",
+        "scripts/contentscript.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ]
+}

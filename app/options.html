@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head>
+    <!-- build:css styles/options-vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css styles/main.css -->
+    <link href="styles/main.css" rel="stylesheet">
+    <!-- endbuild -->
+  </head>
+  <body>
+    <!-- build:js scripts/options-vendor.js -->
+    <!-- bower:js -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <form>
+      <h2>Access Token</h2>
+      <label>
+        Generate new token on <a href="https://github.com/settings/tokens">Github access tokens</a> page
+      </label>
+      <br/>
+      <br/>
+      <div>
+        <input type="text" placeholder="0abc2af156a5c9fc130bffa035ab85f98ccfe764" id="accessToken" autofocus style="width: 250px;"></input>
+        <button id="save">Save</button>
+      </div>
+    </form>
+
+    <!-- build:js scripts/options.js -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="scripts/options.js"></script>
+    <!-- endbuild -->
+  </body>
+</html>
