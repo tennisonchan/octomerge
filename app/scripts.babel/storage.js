@@ -27,7 +27,7 @@ var Storage = (function($, window, chrome){
 
     storageArea.set(data, function(){
       if(runtime.lastError){
-        __log("Error ocurred when setting value");
+        console.error('Error ocurred when setting value');
         defferred.reject(data, runtime.lastError);
       } else {
         deferred.resolve(data);
@@ -42,7 +42,7 @@ var Storage = (function($, window, chrome){
 
     storageArea.get(key, function(data){
       if(runtime.lastError){
-        __log("Error ocurred when getting value");
+        console.error('Error ocurred when getting value');
         deferred.reject(key, runtime.lastError);
       } else {
         deferred.resolve(data);
@@ -63,4 +63,4 @@ var Storage = (function($, window, chrome){
   initialize();
 
   return _this;
-})(jQuery, window, chrome)
+})(jQuery, window, chrome);

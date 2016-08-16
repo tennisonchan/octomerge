@@ -11,6 +11,7 @@
   "background": {
     "scripts": [
       "bower_components/jquery/dist/jquery.min.js",
+      "scripts/github-api.js",
       "scripts/chromereload.js",
       "scripts/storage.js",
       "scripts/background.js"
@@ -30,12 +31,15 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*"
+        "*://github.com/*"
       ],
       "js": [
         "bower_components/jquery/dist/jquery.min.js",
-        "scripts/contentscript.js"
+        "scripts/github-api.js",
+        "scripts/storage.js",
+        "scripts/location-recognizer.js",
+        "scripts/auto-merge-injecter.js",
+        "scripts/main.js"
       ],
       "run_at": "document_end",
       "all_frames": false
