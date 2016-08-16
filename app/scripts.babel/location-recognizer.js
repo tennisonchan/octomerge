@@ -2,7 +2,7 @@ class LocationRecognizer {
   constructor(pathname) {
     let pathnameArray = pathname.split('/');
 
-    this.pathData = (
+    this.pathData = Object.assign({ pathname: pathname },
       this.isSinglePullRequestPage(pathnameArray) ||
       this.isPersonalPullRequestsPage(pathnameArray) ||
       this.isPullRequestListPage(pathnameArray) ||
@@ -20,6 +20,7 @@ class LocationRecognizer {
 
   isSinglePullRequestPage(array = []) {
     if (array[3] !== 'pull' || array.length !== 5) { return false; }
+    // /:owner/:repo/pull/:number
 
     return {
       page: 'SinglePullRequest',
@@ -31,6 +32,7 @@ class LocationRecognizer {
 
   isPersonalPullRequestsPage(array = []) {
     if (array[1] !== 'pulls' || array.length !== 2) { return false; }
+    // /pulls
 
     return {
       page: 'PersonalPullRequests'
@@ -39,6 +41,7 @@ class LocationRecognizer {
 
   isPullRequestListPage(array = []) {
     if (array[3] !== 'pulls' || array.length !== 4) { return false; }
+    // /:owner/:repo/pulls
 
     return {
       page: 'PullRequestList',
@@ -49,8 +52,10 @@ class LocationRecognizer {
 
   isPullRequestListAuthorPage(array = []) {
     if (array[3] !== 'pulls' || array.length !== 5) { return false; }
+    // /:owner/:repo/pulls/:author
 
     return {
+      pathname: pathname.split('/').slice(0, -1).join('/'),
       page: 'PullRequestListAuthor',
       owner: array[1],
       repo: array[2],

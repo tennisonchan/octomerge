@@ -1,32 +1,50 @@
-let githubAPI = null;
+let Main = (function(window, $, AutoMergeButtonInjecter, LocationRecognizer) {
+  let _port = null;
+  let _runtimeOnConnectHandler = {};
+  let _this = {
+    pathname: window.location.pathname
+  };
 
-class Main {
-  constructor() {
-    console.log('Main init');
-    this.autoMergeInjecter = new AutoMergeInjecter();
+  function init() {
+    console.log('Main#init');
+    _this.autoMergeButtonInjecter = new AutoMergeButtonInjecter();
 
-    this.render();
+    $(window.document).on('pjax:end', _this.render);
 
-    $(document).on('pjax:end', this.render.bind(this));
+    _port = chrome.runtime.connect({ name: 'git-automerge' });
+    _port.onMessage.addListener(function (response, port) {
+      let handler = _runtimeOnConnectHandler[response.message];
+      typeof handler === 'function' && handler(response.data, port);
+    });
+
+    _this.render();
   }
 
-  render() {
-    console.log('render');
-    let pathData = new LocationRecognizer(window.location.pathname).identifyAs();
+  _this.render = function() {
+    console.log('Main#render');
+    let pathData = new LocationRecognizer(_this.pathname).identifyAs();
 
     if (pathData.isPage('SinglePullRequest')) {
+      Storage.get(_this.pathname).then(function(storage) {
+        let data = JSON.parse(storage[_this.pathname]) || {};
 
-      githubAPI.getPRData(pathData).then((prData) => {
-        let { mergeable, mergeable_state, statuses_url } = prData;
+        _this.autoMergeButtonInjecter.inject(function(e) {
+          let newClickState = !_this.autoMergeButtonInjecter.clicked;
 
-        this.autoMergeInjecter.inject();
-      })
+          _this.autoMergeButtonInjecter.setState(newClickState);
+
+          _port.postMessage({
+            message: 'clickOnAutoMergeButton',
+            data: { pathData, clicked: newClickState }
+          });
+        });
+
+        _this.autoMergeButtonInjecter.setState(data.clicked);
+      });
     }
   }
-}
 
-Storage.get({ accessToken: null }).then(function(storage) {
-  githubAPI = new GithubAPI(storage.accessToken);
+  init();
 
-  new Main();
-});
+  return _this;
+})(window, jQuery, AutoMergeButtonInjecter, LocationRecognizer);

@@ -8,10 +8,11 @@ class GithubAPI {
     return this.accessToken == null;
   }
 
-  _callAPI(url) {
-    if (this._checkAccessTokenAbsence()) return false;
+  _callAPI(url, options) {
+    if (this._checkAccessTokenAbsence()) return $.Deferred().reject();
+    options = options || {};
 
-    return $.ajax(url);
+    return $.ajax(url, options);
   }
 
   getPRData({ owner, repo, prNumber }) {
@@ -26,10 +27,26 @@ class GithubAPI {
     return this._callAPI(url);
   }
 
-  getPRStatusData({ owner, repo, sha }) {
+  getPRStatusData({ owner, repo, ref }) {
     // "https://api.github.com/repos/alphasights/pistachio/statuses/5b9c1ad2166607d1723c6954b0ab90fe8f1df64b"
-    let url = `${this.baseUrl}/repos/${owner}/${repo}/commits/${sha}/status?access_token=${this.accessToken}`;
+    let url = `${this.baseUrl}/repos/${owner}/${repo}/commits/${ref}/status?access_token=${this.accessToken}`;
 
     return this._callAPI(url);
+  }
+
+  performMerge({ owner, repo, sha }, data) {
+    // /repos/:owner/:repo/merges
+    let url = `${this.baseUrl}/repos/${owner}/${repo}/merges?access_token=${this.accessToken}`;
+
+    // data = {
+    //   base: 'master', // base.ref
+    //   head: 'cool_feature', // head.ref
+    //   commit_message: 'Shipped cool_feature!'
+    // }
+
+    return this._callAPI(url, {
+      method: 'POST',
+      data: data,
+    });
   }
 }

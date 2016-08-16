@@ -11,8 +11,10 @@
   "background": {
     "scripts": [
       "bower_components/jquery/dist/jquery.min.js",
-      "scripts/github-api.js",
       "scripts/chromereload.js",
+      "scripts/worker.js",
+      "scripts/linear-port.js",
+      "scripts/github-api.js",
       "scripts/storage.js",
       "scripts/background.js"
     ]

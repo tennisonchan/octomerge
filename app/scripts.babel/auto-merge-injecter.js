@@ -1,29 +1,38 @@
-class AutoMergeInjecter {
+class AutoMergeButtonInjecter {
   constructor() {
-    console.log('AutoMergeInjecter init');
+    console.log('AutoMergeButtonInjecter init');
     this.appendTargetClass = '.merge-message';
-    this.autoButton = null;
+    this.autoButton = this.createAutoMergeButton();
     this.autoMergeButtonClass = '.auto-merge-button';
+    this.clicked = false;
     this.hideMergeMessageClass = '.alt-merge-options, .merge-branch-manually';
   }
 
-  inject() {
+  inject(clickHandler) {
     this.hideMergeMessage();
 
-    if (this.isAutoMergeButtonNotPresent()) {
-      this.autoButton = this.createAutoMergeButton();
+    if (!this.isAutoMergeButtonPresent()) {
       this.autoButton.appendTo(this.appendTargetClass);
-      this.autoButton.off('click').on('click', this.autoMergeEvent);
-      this.setButtonDisability(false);
+      this.autoButton.off('click').on('click', clickHandler);
     }
   }
 
-  isAutoMergeButtonNotPresent() {
-    return !$(this.autoMergeButtonClass).length;
+  isAutoMergeButtonPresent() {
+    return !!$(this.autoMergeButtonClass).length;
+  }
+
+  setState(clicked) {
+    this.clicked = clicked;
+    this.autoButton.toggleClass('btn-primary', !clicked);
+    this.changeText(clicked ? 'Cancel Auto Merge' : 'Auto Merge');
   }
 
   setButtonDisability(toDisbale) {
-    this.autoButton && this.autoButton.attr('disabled', toDisbale);
+    this.autoButton.attr('disabled', toDisbale);
+  }
+
+  changeText(textContent) {
+    this.autoButton.html(textContent);
   }
 
   hideMergeMessage() {
@@ -32,13 +41,9 @@ class AutoMergeInjecter {
 
   createAutoMergeButton() {
     return $('<button/>', {
-      class: 'btn js-details-target auto-merge-button',
+      class: 'btn btn-primary js-details-target auto-merge-button',
       text: 'Auto Merge',
       type: 'button'
     });
-  }
-
-  autoMergeEvent(e) {
-    console.log('click');
   }
 }
