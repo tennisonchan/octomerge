@@ -26,7 +26,7 @@ let Main = (function(window, $, AutoMergeButtonInjecter, LocationRecognizer) {
 
     if (pathData.isPage('SinglePullRequest')) {
       Storage.get(_this.pathname).then(function(storage) {
-        let data = JSON.parse(storage[_this.pathname]) || {};
+        let data = JSON.parse(storage[_this.pathname] || '{}');
 
         _this.autoMergeButtonInjecter.inject(function(e) {
           let newClickState = !_this.autoMergeButtonInjecter.clicked;

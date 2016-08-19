@@ -1,10 +1,10 @@
 {
   "appName": {
-    "message": "github review",
+    "message": "octomerge",
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "My Chrome Extension",
+    "message": "A missing auto merge button on github",
     "description": "The description of the application"
   }
 }

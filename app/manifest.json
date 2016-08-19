@@ -4,8 +4,8 @@
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
   "icons": {
-    "16": "images/icon-16.png",
-    "128": "images/icon-128.png"
+    "16": "images/octomerge-icon.png",
+    "128": "images/octomerge-icon.png"
   },
   "default_locale": "en",
   "background": {
