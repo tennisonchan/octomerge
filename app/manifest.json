@@ -22,6 +22,7 @@
   "permissions": [
     "tabs",
     "*://api.github.com/*",
+    "*://github.com/*",
     "http://*/*",
     "https://*/*",
     "background",
@@ -30,6 +31,15 @@
   "options_ui": {
     "page": "options.html"
   },
+  "browser_action": {
+    "default_icon": {
+      "19": "images/octomerge-icon.png",
+      "38": "images/octomerge-icon.png"
+    },
+    "default_title": "octomerge",
+    "default_popup": "popup.html"
+  },
+  "content_security_policy": "script-src 'self' https://github.com; object-src 'self'; frame-src 'self' http://localhost:* https://github.com",
   "content_scripts": [
     {
       "matches": [

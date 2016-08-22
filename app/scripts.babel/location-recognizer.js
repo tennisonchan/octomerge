@@ -26,7 +26,7 @@ class LocationRecognizer {
       page: 'SinglePullRequest',
       owner: array[1],
       repo: array[2],
-      prNumber: array[4]
+      pr_number: array[4]
     }
   }
 

@@ -1,10 +1,11 @@
 chrome.runtime.onInstalled.addListener(details => {
   console.log('previousVersion', details.previousVersion);
+
+  Storage.get({ accessToken: null }).then(function(storage) {
+    new Background(new GithubAPI(storage.accessToken));
+  });
 });
 
-Storage.get({ accessToken: null }).then(function(storage) {
-  new Background(new GithubAPI(storage.accessToken));
-});
 
 function Background(_githubAPI) {
   let _this = {};
@@ -19,31 +20,33 @@ function Background(_githubAPI) {
     });
   }
 
-  _runtimeOnConnectHandler.clickOnAutoMergeButton = function({ pathData, clicked }) {
-    _githubAPI.getPRData(pathData).then(function(prData) {
-      let { merged, mergeable, mergeable_state, statuses_url, updated_at, head, base } = prData;
-      let base_ref = base.ref;
-      let head_ref = head.ref;
-      let storeData = {};
+  _runtimeOnConnectHandler.loadAutoMergeButtonStatus = function({ pathData }, _port) {
+    $.ajax(`http://localhost:3000/auto_merges/${pathData.pr_number}`, {
+      dataType: 'json'
+    }).then(function(data){
+      data = data || {};
 
-      storeData[pathData.pathname] = JSON.stringify({
-        updated_at: +new Date(),
-        clicked: clicked,
-        merged: merged,
-        sha: head.sha,
-        base: base_ref,
-        head: head_ref
+      _port.postMessage({
+        message: 'loadAutoMergeButtonStatusCompleted',
+        data: {
+          pathData: pathData,
+          recordExists: !!(data.pr_number && data.status !== 'closed')
+        }
       });
+    });
+  }
 
-      Storage.set(storeData);
+  _runtimeOnConnectHandler.createAutoMerge = function({ pathData }) {
+    $.ajax('http://localhost:3000/auto_merges', {
+      type: 'POST',
+      dataType: 'json',
+      data: { pathData }
+    });
+  }
 
-      Worker.performUntil(function(deferred) {
-        _githubAPI.getPRStatusData(Object.assign({ ref: head_ref }, pathData))
-          .then(function(statusData) {
-            console.log('hello', statusData.state );
-            // deferred.resolve(statusData.state === 'success');
-          });
-      })
+  _runtimeOnConnectHandler.cancelAutoMerge = function({ pathData }) {
+    $.ajax(`http://localhost:3000/auto_merges/${pathData.pr_number}`, {
+      type: 'DELETE'
     });
   }
 

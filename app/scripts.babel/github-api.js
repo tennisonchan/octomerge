@@ -15,14 +15,14 @@ class GithubAPI {
     return $.ajax(url, options);
   }
 
-  getPRData({ owner, repo, prNumber }) {
-    let url = `${this.baseUrl}/repos/${owner}/${repo}/pulls/${prNumber}?access_token=${this.accessToken}`;
+  getPRData({ owner, repo, pr_number }) {
+    let url = `${this.baseUrl}/repos/${owner}/${repo}/pulls/${pr_number}?access_token=${this.accessToken}`;
 
     return this._callAPI(url);
   }
 
-  getCommentsData({ owner, repo, prNumber }) {
-    let url = `${this.baseUrl}/repos/${owner}/${repo}/issues/${prNumber}/comments?access_token=${this.accessToken}`;
+  getCommentsData({ owner, repo, pr_number }) {
+    let url = `${this.baseUrl}/repos/${owner}/${repo}/issues/${pr_number}/comments?access_token=${this.accessToken}`;
 
     return this._callAPI(url);
   }

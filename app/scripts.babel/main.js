@@ -25,23 +25,33 @@ let Main = (function(window, $, AutoMergeButtonInjecter, LocationRecognizer) {
     let pathData = new LocationRecognizer(_this.pathname).identifyAs();
 
     if (pathData.isPage('SinglePullRequest')) {
-      Storage.get(_this.pathname).then(function(storage) {
-        let data = JSON.parse(storage[_this.pathname] || '{}');
-
-        _this.autoMergeButtonInjecter.inject(function(e) {
-          let newClickState = !_this.autoMergeButtonInjecter.clicked;
-
-          _this.autoMergeButtonInjecter.setState(newClickState);
-
-          _port.postMessage({
-            message: 'clickOnAutoMergeButton',
-            data: { pathData, clicked: newClickState }
-          });
-        });
-
-        _this.autoMergeButtonInjecter.setState(data.clicked);
+      _port.postMessage({
+        message: 'loadAutoMergeButtonStatus',
+        data: { pathData }
       });
     }
+  }
+
+  _runtimeOnConnectHandler.loadAutoMergeButtonStatusCompleted = function({ pathData, recordExists }) {
+    _this.autoMergeButtonInjecter.inject(function() {
+      let newClickState = !_this.autoMergeButtonInjecter.clicked;
+
+      _this.autoMergeButtonInjecter.setState(newClickState);
+
+      if (newClickState){
+        _port.postMessage({
+          message: 'createAutoMerge',
+          data: { pathData }
+        });
+      } else {
+        _port.postMessage({
+          message: 'cancelAutoMerge',
+          data: { pathData }
+        });
+      }
+    });
+
+    _this.autoMergeButtonInjecter.setState(recordExists);
   }
 
   init();
