@@ -21,7 +21,7 @@ function Background(_githubAPI) {
   }
 
   _runtimeOnConnectHandler.loadAutoMergeButtonStatus = function({ pathData }, _port) {
-    $.ajax(`http://localhost:3000/auto_merges/${pathData.pr_number}`, {
+    $.ajax(`${ENV.HOST}/auto_merges/${pathData.pr_number}`, {
       dataType: 'json'
     }).then(function(data){
       data = data || {};
@@ -37,7 +37,7 @@ function Background(_githubAPI) {
   }
 
   _runtimeOnConnectHandler.createAutoMerge = function({ pathData }) {
-    $.ajax('http://localhost:3000/auto_merges', {
+    $.ajax(`${ENV.HOST}/auto_merges`, {
       type: 'POST',
       dataType: 'json',
       data: { pathData }
@@ -45,7 +45,7 @@ function Background(_githubAPI) {
   }
 
   _runtimeOnConnectHandler.cancelAutoMerge = function({ pathData }) {
-    $.ajax(`http://localhost:3000/auto_merges/${pathData.pr_number}`, {
+    $.ajax(`${ENV.HOST}/auto_merges/${pathData.pr_number}`, {
       type: 'DELETE'
     });
   }
