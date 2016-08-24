@@ -25,10 +25,14 @@ let Main = (function(window, $, AutoMergeButtonInjecter, LocationRecognizer) {
     let pathData = new LocationRecognizer(_this.pathname).identifyAs();
 
     if (pathData.isPage('SinglePullRequest')) {
-      _port.postMessage({
-        message: 'loadAutoMergeButtonStatus',
-        data: { pathData }
-      });
+      if ($('.post-merge-message button[type=submit]').length) {
+        $('.post-merge-message button[type=submit]').click();
+      } else {
+        _port.postMessage({
+          message: 'loadAutoMergeButtonStatus',
+          data: { pathData }
+        });
+      }
     }
   }
 
