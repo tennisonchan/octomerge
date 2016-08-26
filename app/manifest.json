@@ -48,9 +48,11 @@
       ],
       "js": [
         "bower_components/jquery/dist/jquery.min.js",
+        "scripts/env.js",
         "scripts/github-api.js",
         "scripts/storage.js",
         "scripts/location-recognizer.js",
+        "scripts/login-button-injecter.js",
         "scripts/auto-merge-injecter.js",
         "scripts/main.js"
       ],

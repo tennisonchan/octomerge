@@ -1,4 +1,4 @@
-let Main = (function(window, $, AutoMergeButtonInjecter, LocationRecognizer) {
+let Main = (function(window, $, AutoMergeButtonInjecter, LoginButtonInjecter, LocationRecognizer) {
   let _port = null;
   let _runtimeOnConnectHandler = {};
   let _this = {
@@ -8,6 +8,7 @@ let Main = (function(window, $, AutoMergeButtonInjecter, LocationRecognizer) {
   function init() {
     console.log('Main#init');
     _this.autoMergeButtonInjecter = new AutoMergeButtonInjecter();
+    _this.loginButtonInjecter = new LoginButtonInjecter();
 
     $(window.document).on('pjax:end', _this.render);
 
@@ -54,7 +55,13 @@ let Main = (function(window, $, AutoMergeButtonInjecter, LocationRecognizer) {
     _this.autoMergeButtonInjecter.setState(recordExists);
   }
 
+  _runtimeOnConnectHandler.requestLogin = function() {
+    _this.loginButtonInjecter.inject(function() {
+      window.open(ENV.HOST);
+    });
+  }
+
   init();
 
   return _this;
-})(window, jQuery, AutoMergeButtonInjecter, LocationRecognizer);
+})(window, jQuery, AutoMergeButtonInjecter, LoginButtonInjecter, LocationRecognizer);
