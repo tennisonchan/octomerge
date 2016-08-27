@@ -6,6 +6,9 @@ class AutoMergeButtonInjecter {
     this.autoMergeButtonClass = '.auto-merge-button';
     this.clicked = false;
     this.hideMergeMessageClass = '.alt-merge-options, .merge-branch-manually';
+    this.relativeTime = $('<relative-time/>');
+    this.lastUpdateMessage = $('<p/>', { class: 'alt-auto-merge text-small', text: 'Last try: '})
+      .append(this.relativeTime);
   }
 
   inject(clickHandler) {
@@ -21,10 +24,11 @@ class AutoMergeButtonInjecter {
     return !!$(this.autoMergeButtonClass).length;
   }
 
-  setState(clicked) {
+  setState(clicked, lastUpdated) {
     this.clicked = clicked;
     this.autoButton.toggleClass('btn-primary', !clicked);
     this.changeText(clicked ? 'Cancel Auto Merge' : 'Auto Merge');
+    this.showLastUpdateMessage(lastUpdated).appendTo(this.appendTargetClass).toggle(clicked);
   }
 
   setButtonDisability(toDisbale) {
@@ -37,6 +41,20 @@ class AutoMergeButtonInjecter {
 
   hideMergeMessage() {
     $(this.hideMergeMessageClass).hide();
+  }
+
+  showLastUpdateMessage(lastUpdated) {
+    let localTime = moment(lastUpdated).format('LLLL');
+
+    this.relativeTime = this.relativeTime.replaceWith($('<relative-time/>', {
+      'aria-label': localTime,
+      class: 'tooltipped tooltipped-n last-try-relative-time',
+      datetime: lastUpdated,
+      title: localTime,
+      text: moment(lastUpdated).fromNow()
+    }));
+
+    return this.lastUpdateMessage;
   }
 
   createAutoMergeButton() {

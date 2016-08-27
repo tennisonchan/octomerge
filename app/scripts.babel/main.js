@@ -1,4 +1,4 @@
-let Main = (function(window, $, AutoMergeButtonInjecter, LoginButtonInjecter, LocationRecognizer) {
+let Main = (function(window, $, moment, AutoMergeButtonInjecter, LoginButtonInjecter, LocationRecognizer) {
   let _port = null;
   let _runtimeOnConnectHandler = {};
   let _this = {
@@ -33,11 +33,10 @@ let Main = (function(window, $, AutoMergeButtonInjecter, LoginButtonInjecter, Lo
     }
   }
 
-  _runtimeOnConnectHandler.loadAutoMergeButtonStatusCompleted = function({ pathData, recordExists }) {
+  _runtimeOnConnectHandler.loadAutoMergeButtonStatusCompleted = function({ pathData, lastUpdated, recordExists }) {
     _this.autoMergeButtonInjecter.inject(function() {
       let newClickState = !_this.autoMergeButtonInjecter.clicked;
-
-      _this.autoMergeButtonInjecter.setState(newClickState);
+      _this.autoMergeButtonInjecter.setState(newClickState, new Date());
 
       if (newClickState){
         _port.postMessage({
@@ -52,7 +51,7 @@ let Main = (function(window, $, AutoMergeButtonInjecter, LoginButtonInjecter, Lo
       }
     });
 
-    _this.autoMergeButtonInjecter.setState(recordExists);
+    _this.autoMergeButtonInjecter.setState(recordExists, lastUpdated);
   }
 
   _runtimeOnConnectHandler.requestLogin = function() {
@@ -64,4 +63,4 @@ let Main = (function(window, $, AutoMergeButtonInjecter, LoginButtonInjecter, Lo
   init();
 
   return _this;
-})(window, jQuery, AutoMergeButtonInjecter, LoginButtonInjecter, LocationRecognizer);
+})(window, jQuery, moment, AutoMergeButtonInjecter, LoginButtonInjecter, LocationRecognizer);

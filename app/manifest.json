@@ -46,8 +46,12 @@
       "matches": [
         "*://github.com/*"
       ],
+      "css": [
+        "styles/main.css"
+      ],
       "js": [
         "bower_components/jquery/dist/jquery.min.js",
+        "bower_components/moment/moment.js",
         "scripts/env.js",
         "scripts/github-api.js",
         "scripts/storage.js",

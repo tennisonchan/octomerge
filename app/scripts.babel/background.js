@@ -31,12 +31,13 @@ function Background(_githubAPI) {
         message: 'loadAutoMergeButtonStatusCompleted',
         data: {
           pathData: pathData,
+          lastUpdated: data.last_updated,
           recordExists: !!(data.pr_number && data.status !== 'closed')
         }
       });
     })
     .fail(function(deferred, type, errorType) {
-      if (errorType === "Unauthorized") {
+      if (errorType === 'Unauthorized') {
         _port.postMessage({
           message: 'requestLogin',
           data: {}
