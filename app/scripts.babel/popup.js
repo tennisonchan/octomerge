@@ -10,9 +10,11 @@ var Popup = (function(window, $) {
   }
 
   function createOctoMergeIframe (options) {
+    options = options || {};
+
     return $('<iframe/>', $.extend({
       id: 'octomerge-iframe',
-      src: ENV.HOST
+      src: ENV.HOST + '/auto_merges?iframe=1'
     }, options))
     .append('<p/>', {
       text: 'Your browser does not support iframes.'
