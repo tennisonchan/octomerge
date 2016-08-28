@@ -1,4 +1,4 @@
-let Main = (function(window, $, moment, AutoMergeButtonInjecter, LoginButtonInjecter, LocationRecognizer) {
+let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageInjecter, LoginButtonInjecter, LocationRecognizer) {
   let _port = null;
   let _runtimeOnConnectHandler = {};
   let _this = {
@@ -9,6 +9,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, LoginButtonInje
     console.log('Main#init');
     _this.autoMergeButtonInjecter = new AutoMergeButtonInjecter();
     _this.loginButtonInjecter = new LoginButtonInjecter();
+    _this.statusMessageInjecter = new StatusMessageInjecter();
 
     $(window.document).on('pjax:end', _this.render);
 
@@ -51,7 +52,8 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, LoginButtonInje
       }
     });
 
-    _this.autoMergeButtonInjecter.setState(recordExists, lastUpdated);
+    _this.autoMergeButtonInjecter.setState(recordExists);
+    _this.statusMessageInjecter.inject('last-try', { lastUpdated });
   }
 
   _runtimeOnConnectHandler.requestLogin = function() {
@@ -63,4 +65,4 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, LoginButtonInje
   init();
 
   return _this;
-})(window, jQuery, moment, AutoMergeButtonInjecter, LoginButtonInjecter, LocationRecognizer);
+})(window, jQuery, moment, AutoMergeButtonInjecter, StatusMessageInjecter, LoginButtonInjecter, LocationRecognizer);

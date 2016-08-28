@@ -32,7 +32,7 @@ function Background(_githubAPI) {
         data: {
           pathData: pathData,
           lastUpdated: data.last_updated,
-          recordExists: !!(data.pr_number && data.status !== 'closed')
+          recordExists: !!(data.status === 'pending')
         }
       });
     })

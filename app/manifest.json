@@ -57,6 +57,7 @@
         "scripts/storage.js",
         "scripts/location-recognizer.js",
         "scripts/login-button-injecter.js",
+        "scripts/status-message-injecter.js",
         "scripts/auto-merge-injecter.js",
         "scripts/main.js"
       ],
