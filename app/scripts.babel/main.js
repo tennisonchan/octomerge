@@ -2,7 +2,8 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
   let _port = null;
   let _runtimeOnConnectHandler = {};
   let _this = {
-    mutationTarget: 'partial-pull-merging'
+    mutationTarget: 'partial-pull-merging',
+    completenessIndicatorErrorOrSuccessClass: '.branch-action-item.js-details-container .completeness-indicator-error, .branch-action-item.js-details-container .completeness-indicator-success'
   };
 
   function init() {
@@ -23,7 +24,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
   }
 
   _this.isCompletenessIndicatorErrorOrSuccess = function() {
-    return !!$('.branch-action-item.js-details-container .completeness-indicator-error, .branch-action-item.js-details-container .completeness-indicator-success').length;
+    return !!$(_this.completenessIndicatorErrorOrSuccessClass).length;
   }
 
   _this.render = function() {
