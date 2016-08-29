@@ -11,7 +11,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
     _this.loginButtonInjecter = new LoginButtonInjecter();
     _this.statusMessageInjecter = new StatusMessageInjecter();
 
-    _port = chrome.runtime.connect({ name: 'git-automerge' });
+    _port = chrome.runtime.connect({ name: 'git-octomerge' });
     _port.onMessage.addListener(function(response, port) {
       let handler = _runtimeOnConnectHandler[response.message];
       typeof handler === 'function' && handler(response.data, port);
