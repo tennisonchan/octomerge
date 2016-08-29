@@ -6,7 +6,6 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
   };
 
   function init() {
-    console.log('Main#init');
     _this.autoMergeButtonInjecter = new AutoMergeButtonInjecter();
     _this.loginButtonInjecter = new LoginButtonInjecter();
     _this.statusMessageInjecter = new StatusMessageInjecter();
@@ -14,7 +13,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
     $(window.document).on('pjax:end', _this.render);
 
     _port = chrome.runtime.connect({ name: 'git-automerge' });
-    _port.onMessage.addListener(function (response, port) {
+    _port.onMessage.addListener(function(response, port) {
       let handler = _runtimeOnConnectHandler[response.message];
       typeof handler === 'function' && handler(response.data, port);
     });
@@ -22,8 +21,11 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
     _this.render();
   }
 
+  _this.isCompletenessIndicatorErrorOrSuccess = function() {
+    return !!$('.branch-action-item.js-details-container .completeness-indicator-error, .branch-action-item.js-details-container .completeness-indicator-success').length;
+  }
+
   _this.render = function() {
-    console.log('Main#render');
     let pathData = new LocationRecognizer(_this.pathname).identifyAs();
 
     if (pathData.isPage('SinglePullRequest')) {
@@ -37,7 +39,11 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
   _runtimeOnConnectHandler.loadAutoMergeButtonStatusCompleted = function({ pathData, lastUpdated, recordExists }) {
     _this.autoMergeButtonInjecter.inject(function() {
       let newClickState = !_this.autoMergeButtonInjecter.clicked;
-      _this.autoMergeButtonInjecter.setState(newClickState, new Date());
+      _this.autoMergeButtonInjecter.setState(newClickState);
+      _this.statusMessageInjecter.inject('last-try', {
+        lastUpdated: new Date(),
+        toShow: newClickState
+      });
 
       if (newClickState){
         _port.postMessage({
@@ -53,7 +59,10 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
     });
 
     _this.autoMergeButtonInjecter.setState(recordExists);
-    _this.statusMessageInjecter.inject('last-try', { lastUpdated });
+    _this.statusMessageInjecter.inject('last-try', {
+      lastUpdated,
+      toShow: recordExists
+    });
   }
 
   _runtimeOnConnectHandler.requestLogin = function() {

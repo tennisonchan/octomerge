@@ -1,21 +1,23 @@
 class StatusMessageInjecter {
   constructor() {
-    console.log('StatusMessageInjecter init');
     this.appendTargetClass = '.merge-message';
     this.statusMessageClass = '.auto-merge-status-message';
-    this.messageElement = null;
+    this.messageElement = $('<div/>', { class: 'auto-merge-status-message' });
   }
 
   inject(type, options) {
     if (!this.isStatusMessagePresent(type)) {
-      this.messageElement = $('<div/>').appendTo(this.appendTargetClass);
-      this.updateMessage(type, options);
+      this.messageElement.appendTo(this.appendTargetClass);
     }
+    this.updateMessage(type, options);
+    this.toggle(options.toShow);
   }
 
   updateMessage(type, options) {
-    if (type === 'last-try' && options.lastUpdated) {
-      this.messageElement = this.messageElement.replaceWith(this.createLastTryMessage(options));
+    if (type === 'last-try' && options.toShow) {
+      let newElement = this.createLastTryMessage(options);
+      this.messageElement.replaceWith(newElement);
+      this.messageElement = newElement;
     }
   }
 
@@ -29,6 +31,7 @@ class StatusMessageInjecter {
   }
 
   createLastTryMessage({ lastUpdated }) {
+    lastUpdated = lastUpdated || new Date();
     let localTime = moment(lastUpdated).format('LLLL');
 
     let relativeTime = $('<relative-time/>', {
