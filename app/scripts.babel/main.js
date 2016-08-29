@@ -20,7 +20,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
     _this.render();
 
     $(window.document).on('pjax:end', _this.render);
-    observeDOM(window.document, _this.render());
+    observeDOM(window.document, _this.render);
   }
 
   _this.isCompletenessIndicatorErrorOrSuccess = function() {
