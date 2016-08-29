@@ -32,6 +32,8 @@ function Background(_githubAPI) {
         data: {
           pathData: pathData,
           lastUpdated: data.last_updated,
+          autoMergeBy: data.auto_merge_by,
+          isOwner: data.is_owner,
           recordExists: !!(data.state === 'pending')
         }
       });

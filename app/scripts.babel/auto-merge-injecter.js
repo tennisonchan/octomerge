@@ -21,14 +21,29 @@ class AutoMergeButtonInjecter {
     return !!$(this.autoMergeButtonClass).length;
   }
 
-  setState(clicked) {
+  setState({ clicked, isOwner, autoMergeBy }) {
     this.clicked = clicked;
     this.autoButton.toggleClass('btn-primary', !clicked);
     this.changeText(clicked ? 'Cancel Auto Merge' : 'Auto Merge');
+    if(clicked) {
+      this.setButtonDisability(!isOwner);
+      this.setTooltips(autoMergeBy);
+    }
   }
 
   setButtonDisability(toDisbale) {
     this.autoButton.attr('disabled', toDisbale);
+  }
+
+  setTooltips(autoMergeBy) {
+    let tooltipTitle = `Auto merged by ${autoMergeBy}`;
+
+    this.autoButton.attr({
+      'aria-label': tooltipTitle,
+      title: tooltipTitle
+    });
+
+    this.autoButton.addClass('tooltipped tooltipped-n');
   }
 
   changeText(textContent) {

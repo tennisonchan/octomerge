@@ -34,10 +34,14 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
     }
   }
 
-  _runtimeOnConnectHandler.loadAutoMergeButtonStatusCompleted = function({ pathData, lastUpdated, recordExists }) {
+  _runtimeOnConnectHandler.loadAutoMergeButtonStatusCompleted = function(data) {
+    let { autoMergeBy, pathData, lastUpdated, recordExists, isOwner } = data;
+
+    if(_this.isCompletenessIndicatorErrorOrSuccess()) { return false; }
+
     _this.autoMergeButtonInjecter.inject(function() {
       let newClickState = !_this.autoMergeButtonInjecter.clicked;
-      _this.autoMergeButtonInjecter.setState(newClickState);
+      _this.autoMergeButtonInjecter.setState({ clicked: newClickState, isOwner: true });
       _this.statusMessageInjecter.inject('last-try', {
         lastUpdated: new Date(),
         toShow: newClickState
@@ -56,7 +60,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
       }
     });
 
-    _this.autoMergeButtonInjecter.setState(recordExists);
+    _this.autoMergeButtonInjecter.setState({ clicked: recordExists, isOwner, autoMergeBy });
     _this.statusMessageInjecter.inject('last-try', {
       lastUpdated,
       toShow: recordExists
