@@ -1,14 +1,14 @@
 let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageInjecter, LoginButtonInjecter, LocationRecognizer) {
   let _port = null;
   let _runtimeOnConnectHandler = {};
-  let _this = {};
+  let _this = {
+    mutationTarget: 'partial-pull-merging'
+  };
 
   function init() {
     _this.autoMergeButtonInjecter = new AutoMergeButtonInjecter();
     _this.loginButtonInjecter = new LoginButtonInjecter();
     _this.statusMessageInjecter = new StatusMessageInjecter();
-
-    $(window.document).on('pjax:end', _this.render);
 
     _port = chrome.runtime.connect({ name: 'git-automerge' });
     _port.onMessage.addListener(function(response, port) {
@@ -17,6 +17,9 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
     });
 
     _this.render();
+
+    $(window.document).on('pjax:end', _this.render);
+    observeDOM(window.document, _this.render());
   }
 
   _this.isCompletenessIndicatorErrorOrSuccess = function() {
@@ -31,6 +34,31 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
         message: 'loadAutoMergeButtonStatus',
         data: { pathData }
       });
+    }
+  }
+
+  function observeDOM(el, callback) {
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
+      eventListenerSupported = window.addEventListener;
+
+    if(MutationObserver){
+      var obs = new MutationObserver(function(mutations, observer){
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.id === _this.mutationTarget) {
+              callback(mutation);
+            }
+          });
+        });
+      });
+      obs.observe( el, { childList:true, subtree:true });
+    }
+    else if(eventListenerSupported){
+      el.addEventListener('DOMNodeInserted', callback, false);
+      el.addEventListener('DOMNodeRemoved', callback, false);
+    }
+    else {
+      console.error('Both MutationObserver and eventListenerSupported are not supported.');
     }
   }
 
