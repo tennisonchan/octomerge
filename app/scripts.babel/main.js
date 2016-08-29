@@ -1,9 +1,7 @@
 let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageInjecter, LoginButtonInjecter, LocationRecognizer) {
   let _port = null;
   let _runtimeOnConnectHandler = {};
-  let _this = {
-    pathname: window.location.pathname
-  };
+  let _this = {};
 
   function init() {
     _this.autoMergeButtonInjecter = new AutoMergeButtonInjecter();
@@ -26,7 +24,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
   }
 
   _this.render = function() {
-    let pathData = new LocationRecognizer(_this.pathname).identifyAs();
+    let pathData = new LocationRecognizer(window.location.pathname).identifyAs();
 
     if (pathData.isPage('SinglePullRequest')) {
       _port.postMessage({
