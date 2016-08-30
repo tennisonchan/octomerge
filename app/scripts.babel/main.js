@@ -1,12 +1,15 @@
-let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageInjecter, LoginButtonInjecter, LocationRecognizer) {
+let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageInjecter, LoginButtonInjecter, LocationRecognizer, Storage) {
   let _port = null;
   let _runtimeOnConnectHandler = {};
   let _this = {
+    deleteBranchAfterMergedClass: '.post-merge-message button[type=submit]',
     mutationTarget: 'partial-pull-merging',
-    completenessIndicatorErrorOrSuccessClass: '.branch-action-item.js-details-container .completeness-indicator-error, .branch-action-item.js-details-container .completeness-indicator-success'
+    completenessIndicatorErrorOrSuccessClass: '.branch-action-item.js-details-container .completeness-indicator-error, .branch-action-item.js-details-container .completeness-indicator-success',
+    deleteBranchMessage: 'Octomerge detects there is an unused branch can be deleted.\n\nDo you want to auto-delete these branches for you in the future? (You can always restore the deleted branches)'
   };
 
-  function init() {
+  function init(storage) {
+    _this.autoDeleteBranches = storage.autoDeleteBranches;
     _this.autoMergeButtonInjecter = new AutoMergeButtonInjecter();
     _this.loginButtonInjecter = new LoginButtonInjecter();
     _this.statusMessageInjecter = new StatusMessageInjecter();
@@ -31,15 +34,24 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
     let pathData = new LocationRecognizer(window.location.pathname).identifyAs();
 
     if (pathData.isPage('SinglePullRequest')) {
-      if ($('.post-merge-message button[type=submit]').length) {
-        $('.post-merge-message button[type=submit]').click();
-      } else {
-        _port.postMessage({
-          message: 'loadAutoMergeButtonStatus',
-          data: { pathData }
-        });
-      }
+      _this.performAutoDeleteBranches();
+
+      _port.postMessage({
+        message: 'loadAutoMergeButtonStatus',
+        data: { pathData }
+      });
     }
+  }
+
+  _this.performAutoDeleteBranches = function() {
+    if (!$(_this.deleteBranchAfterMergedClass).length) { return false; }
+
+    if (_this.autoDeleteBranches === null) {
+      _this.autoDeleteBranches = confirm(_this.deleteBranchMessage);
+      Storage.set({ autoDeleteBranches: _this.autoDeleteBranches });
+    }
+
+    _this.autoDeleteBranches && $(_this.deleteBranchAfterMergedClass).click();
   }
 
   function observeDOM(el, callback) {
@@ -106,7 +118,11 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
     });
   }
 
-  init();
+  Storage.get({
+    autoDeleteBranches: null
+  }).then(function(storage) {
+    init(storage);
+  })
 
   return _this;
-})(window, jQuery, moment, AutoMergeButtonInjecter, StatusMessageInjecter, LoginButtonInjecter, LocationRecognizer);
+})(window, jQuery, moment, AutoMergeButtonInjecter, StatusMessageInjecter, LoginButtonInjecter, LocationRecognizer, Storage);
