@@ -21,18 +21,30 @@ function Background(_githubAPI) {
   }
 
   _runtimeOnConnectHandler.loadAutoMergeButtonStatus = function({ pathData }, _port) {
-    $.ajax(`${ENV.HOST}/auto_merges/${pathData.pr_number}`, {
+    $.ajax(`${ENV.HOST}/auto_merges/${pathData.pr_number}.json`, {
       dataType: 'json'
-    }).then(function(data){
+    })
+    .then(function(data){
       data = data || {};
 
       _port.postMessage({
         message: 'loadAutoMergeButtonStatusCompleted',
         data: {
           pathData: pathData,
-          recordExists: !!(data.pr_number && data.status !== 'closed')
+          lastUpdated: data.last_updated,
+          autoMergeBy: data.auto_merge_by,
+          isOwner: data.is_owner,
+          recordExists: !!(data.state === 'pending')
         }
       });
+    })
+    .fail(function(deferred, type, errorType) {
+      if (errorType === 'Unauthorized') {
+        _port.postMessage({
+          message: 'requestLogin',
+          data: {}
+        });
+      }
     });
   }
 

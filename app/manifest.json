@@ -46,11 +46,18 @@
       "matches": [
         "*://github.com/*"
       ],
+      "css": [
+        "styles/main.css"
+      ],
       "js": [
         "bower_components/jquery/dist/jquery.min.js",
+        "bower_components/moment/moment.js",
+        "scripts/env.js",
         "scripts/github-api.js",
         "scripts/storage.js",
         "scripts/location-recognizer.js",
+        "scripts/login-button-injecter.js",
+        "scripts/status-message-injecter.js",
         "scripts/auto-merge-injecter.js",
         "scripts/main.js"
       ],

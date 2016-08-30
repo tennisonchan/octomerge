@@ -3,6 +3,32 @@ body {
   margin: 0;
 }
 
-#octomerge-iframe {
+iframe#octomerge-iframe {
   border: 0;
+  width: 600px;
+  height: 200px;
+}
+
+.auto-merge-status-message {
+  display: inline-block;
+  margin-bottom: 0;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.last-try-relative-time {
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: 0;
+  color: #767676;
+  cursor: pointer;
+  display: inline-block;
+  font-size: inherit;
+  padding: 0;
+  user-select: none;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
