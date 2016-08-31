@@ -21,12 +21,16 @@ function Background(_githubAPI) {
   }
 
   _runtimeOnConnectHandler.loadAutoMergeButtonStatus = function({ pathData }, _port) {
+    let { owner, repo, pr_number } = pathData;
+
     $.ajax(`${ENV.HOST}/auto_merges/${pathData.pr_number}.json`, {
+      data: {
+        pathData: new Object({ owner, repo, pr_number })
+      },
       dataType: 'json'
     })
     .then(function(data){
       data = data || {};
-
       _port.postMessage({
         message: 'loadAutoMergeButtonStatusCompleted',
         data: {
