@@ -131,7 +131,7 @@ gulp.task('wiredep', () => {
 gulp.task('package', function () {
   var manifest = require('./dist/manifest.json');
   return gulp.src('dist/**')
-      .pipe($.zip('github review-' + manifest.version + '.zip'))
+      .pipe($.zip('octomerge-' + manifest.version + '.zip'))
       .pipe(gulp.dest('package'));
 });
 
