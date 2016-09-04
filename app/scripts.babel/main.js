@@ -114,7 +114,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
 
   _runtimeOnConnectHandler.requestLogin = function() {
     _this.loginButtonInjecter.inject(function() {
-      window.open(ENV.HOST);
+      window.open(`${ENV.HOST}/users/sign_in?iframe=0`);
     });
   }
 
