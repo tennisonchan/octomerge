@@ -4,7 +4,7 @@
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "A missing auto merge button on github",
+    "message": "A missing button for automatic merge on build succeeds on Github",
     "description": "The description of the application"
   }
 }
