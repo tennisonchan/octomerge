@@ -1,3 +1,5 @@
+let buttonTextForLogin = 'Login for Auto-merge';
+
 class LoginButtonInjecter {
   constructor() {
     console.log('LoginButtonInjecter#init');
@@ -31,7 +33,7 @@ class LoginButtonInjecter {
   createLoginButton() {
     return $('<button/>', {
       class: 'btn js-details-target login-button',
-      text: 'Login for Auto Merge',
+      text: buttonTextForLogin,
       type: 'button'
     });
   }
