@@ -1,12 +1,10 @@
+iframe#octomerge-iframe {
+  border: 0;
+}
+
 body {
   padding: 0;
   margin: 0;
-}
-
-iframe#octomerge-iframe {
-  border: 0;
-  width: 600px;
-  height: 200px;
 }
 
 .auto-merge-status-message {

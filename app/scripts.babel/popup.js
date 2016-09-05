@@ -7,6 +7,13 @@ var Popup = (function(window, $) {
     _this.iframe = createOctoMergeIframe();
 
     _this.iframe.appendTo('body');
+
+    window.addEventListener('message', function(event) {
+      if (event.origin === `${ENV.HOST}` && event.data.message === 'popup-resize') {
+        let { width, height } = event.data;
+        _this.iframe.css({ width, height });
+      }
+    }, false);
   }
 
   function createOctoMergeIframe (options) {
