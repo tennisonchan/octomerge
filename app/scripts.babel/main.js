@@ -82,29 +82,25 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
   _runtimeOnConnectHandler.loadAutoMergeButtonStatusCompleted = function(data) {
     let { autoMergeBy, pathData, lastUpdated, recordExists, isOwner } = data;
 
-    if(_this.isCompletenessIndicatorErrorOrSuccess()) { return false; }
+    // if(_this.isCompletenessIndicatorErrorOrSuccess()) { return false; }
 
     _this.autoMergeButtonInjecter.inject(function(e) {
       let { autoMerged, confirmed } = _this.autoMergeButtonInjecter;
 
       if (!autoMerged && !confirmed) {
-        if ($('.js-merge-commit-button[value=merge]').length) {
-          _this.autoMergeButtonInjecter.injectConfirmButton(function() {
-            _this.autoMergeButtonInjecter.confirmed = true;
-            let commit_title = $('#merge_title_field').val();
-            let commit_message = $('#merge_message_field').val();
+        _this.autoMergeButtonInjecter.injectConfirmButton(function() {
+          _this.autoMergeButtonInjecter.confirmed = true;
 
-            _port.postMessage({
-              message: 'createAutoMerge',
-              data: { pathData, commit_title, commit_message }
-            });
-            _this.autoMergeButtonInjecter.setState({ confirmed: !confirmed, isOwner: true });
-            _this.statusMessageInjecter.inject('last-try', {
-              lastUpdated: new Date(),
-              toShow: !confirmed
-            });
+          _this.autoMergeButtonInjecter.setState({ confirmed: !confirmed, isOwner: true });
+          _this.statusMessageInjecter.inject('last-try', { lastUpdated: new Date(), toShow: !confirmed });
+          _port.postMessage({
+            message: 'createAutoMerge',
+            data: { pathData,
+              commit_title: $('#merge_title_field').val(),
+              commit_message: $('#merge_message_field').val()
+            }
           });
-        }
+        });
       } else {
         if (confirmed){
           _port.postMessage({
