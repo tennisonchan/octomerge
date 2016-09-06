@@ -68,7 +68,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
           });
         });
       });
-      obs.observe( el, { childList:true, subtree:true });
+      obs.observe( el, { childList: true, subtree: true });
     }
     else if(eventListenerSupported){
       el.addEventListener('DOMNodeInserted', callback, false);
@@ -84,28 +84,41 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
 
     if(_this.isCompletenessIndicatorErrorOrSuccess()) { return false; }
 
-    _this.autoMergeButtonInjecter.inject(function() {
-      let newClickState = !_this.autoMergeButtonInjecter.clicked;
-      _this.autoMergeButtonInjecter.setState({ clicked: newClickState, isOwner: true });
-      _this.statusMessageInjecter.inject('last-try', {
-        lastUpdated: new Date(),
-        toShow: newClickState
-      });
+    _this.autoMergeButtonInjecter.inject(function(e) {
+      let { autoMerged, confirmed } = _this.autoMergeButtonInjecter;
 
-      if (newClickState){
-        _port.postMessage({
-          message: 'createAutoMerge',
-          data: { pathData }
-        });
+      if (!autoMerged && !confirmed) {
+        if ($('.js-merge-commit-button[value=merge]').length) {
+          _this.autoMergeButtonInjecter.injectConfirmButton(function() {
+            _this.autoMergeButtonInjecter.confirmed = true;
+            let commit_title = $('#merge_title_field').val();
+            let commit_message = $('#merge_message_field').val();
+
+            _port.postMessage({
+              message: 'createAutoMerge',
+              data: { pathData, commit_title, commit_message }
+            });
+            _this.autoMergeButtonInjecter.setState({ confirmed: !confirmed, isOwner: true });
+            _this.statusMessageInjecter.inject('last-try', {
+              lastUpdated: new Date(),
+              toShow: !confirmed
+            });
+          });
+        }
       } else {
-        _port.postMessage({
-          message: 'cancelAutoMerge',
-          data: { pathData }
-        });
+        if (confirmed){
+          _port.postMessage({
+            message: 'cancelAutoMerge',
+            data: { pathData }
+          });
+          _this.statusMessageInjecter.inject('last-try', { toShow: false });
+          _this.autoMergeButtonInjecter.setState({ confirmed: false, isOwner: true });
+          e.stopPropagation();
+        }
       }
     });
 
-    _this.autoMergeButtonInjecter.setState({ clicked: recordExists, isOwner, autoMergeBy });
+    _this.autoMergeButtonInjecter.setState({ confirmed: recordExists, isOwner, autoMergeBy });
     _this.statusMessageInjecter.inject('last-try', {
       lastUpdated,
       toShow: recordExists
