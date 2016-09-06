@@ -1,5 +1,6 @@
 let buttonTextForMerge = 'Auto-merge on Build Succeeds';
-let buttonTextForCancel = 'Cancel Auto-merge'
+let buttonTextForCancel = 'Cancel Auto-merge';
+
 class AutoMergeButtonInjecter {
   constructor() {
     console.log('AutoMergeButtonInjecter init');
@@ -26,10 +27,13 @@ class AutoMergeButtonInjecter {
   setState({ clicked, isOwner, autoMergeBy }) {
     this.clicked = clicked;
     this.autoButton.toggleClass('btn-primary', !clicked);
-    this.changeText(clicked ? buttonTextForCancel : buttonTextForMerge);
     if(clicked) {
       this.setButtonDisability(!isOwner);
       this.setTooltips(autoMergeBy);
+      this.changeText(buttonTextForCancel);
+    } else {
+      this.removeTooltips();
+      this.changeText(buttonTextForMerge);
     }
   }
 
@@ -46,6 +50,11 @@ class AutoMergeButtonInjecter {
     });
 
     this.autoButton.addClass('tooltipped tooltipped-n');
+  }
+
+  removeTooltips() {
+    this.autoButton.removeAttr('aria-label title');
+    this.autoButton.removeClass('tooltipped tooltipped-n');
   }
 
   changeText(textContent) {
