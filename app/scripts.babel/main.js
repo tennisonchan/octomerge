@@ -82,17 +82,21 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
   _runtimeOnConnectHandler.loadAutoMergeButtonStatusCompleted = function(data) {
     let { autoMergeBy, pathData, lastUpdated, recordExists, isOwner } = data;
 
-    // if(_this.isCompletenessIndicatorErrorOrSuccess()) { return false; }
+    if(_this.isCompletenessIndicatorErrorOrSuccess()) { return false; }
 
     _this.autoMergeButtonInjecter.inject(function(e) {
-      let { autoMerged, confirmed } = _this.autoMergeButtonInjecter;
-
-      if (!autoMerged && !confirmed) {
+      if (_this.autoMergeButtonInjecter.confirmed) {
+        e.stopPropagation();
+        _this.autoMergeButtonInjecter.setState({ confirmed: false, isOwner: true });
+        _this.statusMessageInjecter.inject('last-try', { toShow: false });
+        _port.postMessage({
+          message: 'cancelAutoMerge',
+          data: { pathData }
+        });
+      } else {
         _this.autoMergeButtonInjecter.injectConfirmButton(function() {
-          _this.autoMergeButtonInjecter.confirmed = true;
-
-          _this.autoMergeButtonInjecter.setState({ confirmed: !confirmed, isOwner: true });
-          _this.statusMessageInjecter.inject('last-try', { lastUpdated: new Date(), toShow: !confirmed });
+          _this.autoMergeButtonInjecter.setState({ confirmed: true, isOwner: true });
+          _this.statusMessageInjecter.inject('last-try', { lastUpdated: new Date(), toShow: true });
           _port.postMessage({
             message: 'createAutoMerge',
             data: { pathData,
@@ -101,16 +105,6 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
             }
           });
         });
-      } else {
-        if (confirmed){
-          _port.postMessage({
-            message: 'cancelAutoMerge',
-            data: { pathData }
-          });
-          _this.statusMessageInjecter.inject('last-try', { toShow: false });
-          _this.autoMergeButtonInjecter.setState({ confirmed: false, isOwner: true });
-          e.stopPropagation();
-        }
       }
     });
 

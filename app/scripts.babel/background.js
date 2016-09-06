@@ -58,7 +58,7 @@ function Background(_githubAPI) {
     $.ajax(`${ENV.HOST}/auto_merges`, {
       type: 'POST',
       dataType: 'json',
-      data: { owner, repo, pr_number, commit_title, commit_message }
+      data: { pathData, owner, repo, pr_number, commit_title, commit_message }
     });
   }
 

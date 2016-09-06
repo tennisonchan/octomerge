@@ -3,8 +3,8 @@ let buttonTextForCancel = 'Cancel Auto-merge';
 let buttonTextForConfirm = 'Confirm Auto-merge';
 
 let Button = function(options) {
-  this.id = options.id;
   this.el = this.create(options);
+  this.present = false;
 }
 
 Button.prototype.create = function(options) {
@@ -15,8 +15,11 @@ Button.prototype.create = function(options) {
   return this.el;
 }
 
-Button.prototype.present = function() {
-  return $(this.id).length !== 0;
+Button.prototype.append = function(type, target) {
+  if (['appendTo', 'insertBefore'].indexOf(type) === -1) { return false; }
+
+  this.el[type](target);
+  this.present = true;
 }
 
 Button.prototype.setDisability = function(toDisbale) {
@@ -47,28 +50,25 @@ Button.prototype.changeText = function(textContent) {
 }
 
 Button.prototype.on = function(events) {
-  this.el.one(events);
+  this.el.on(events);
 }
 
 class AutoMergeButtonInjecter {
   constructor() {
     console.log('AutoMergeButtonInjecter init');
-    this.appendTargetClass = '.merge-message';
-    this.appendConfirmButtonTargetClass = '.commit-form-actions .btn-group-merge';
+    this.autoMergeButtonAppendTargetSelector = '.merge-message';
+    this.confirmButtonAppendTargetSelector = '.commit-form-actions .btn-group-merge';
+    this.mergePrButtonSelector = '.js-details-target[type=submit]';
+    this.hideMergeMessageSelectors = '.alt-merge-options, .merge-branch-manually';
+    this.confirmed = false;
     this.autoButton = new Button({
-      id: 'auto-merge-button',
       class: 'btn btn-primary js-details-target auto-merge-button',
       text: buttonTextForMerge
     });
     this.confirmButton = new Button({
-      id: 'confirm-button',
       class: 'btn btn-primary js-details-target confirm-button is-show',
       text: buttonTextForConfirm
     });
-    this.autoMergeButtonClass = '.auto-merge-button';
-    this.autoMerged = false;
-    this.confirmed = false;
-    this.hideMergeMessageClass = '.alt-merge-options, .merge-branch-manually';
   }
 
   inject(clickHandler) {
@@ -76,37 +76,39 @@ class AutoMergeButtonInjecter {
 
     if (!this.autoButton.present) {
       this.autoButton.on({ click: clickHandler });
-      this.autoButton.el.appendTo(this.appendTargetClass);
+      this.autoButton.append('appendTo', this.autoMergeButtonAppendTargetSelector);
     }
 
-    $('.js-details-target[type=submit]').on('click', () => {
-      this.confirmButton.present && this.confirmButton.el.removeClass('is-show');
+    $(this.mergePrButtonSelector).on({
+      click: () => {
+        this.confirmButton.present && this.confirmButton.el.removeClass('is-show');
+      }
     });
   }
 
   setState({ confirmed, isOwner, autoMergeBy }) {
     this.confirmed = confirmed;
     this.autoButton.el.toggleClass('btn-primary', !confirmed);
-    this.autoButton.setButtonDisability(!isOwner);
     if(confirmed) {
+      this.autoButton.setDisability(!isOwner);
       this.autoButton.setTooltips(autoMergeBy);
       this.autoButton.changeText(buttonTextForCancel);
-      this.autoButton.removeAttr('data-details-container');
+      this.autoButton.el.removeAttr('data-details-container');
     } else {
       this.autoButton.removeTooltips();
       this.autoButton.changeText(buttonTextForMerge);
-      this.autoButton.attr('data-details-container', '.js-merge-pr');
+      this.autoButton.el.attr('data-details-container', '.js-merge-pr');
     }
   }
 
   hideMergeMessage() {
-    $(this.hideMergeMessageClass).hide();
+    $(this.hideMergeMessageSelectors).hide();
   }
 
   injectConfirmButton(clickHandler) {
     if (!this.confirmButton.present) {
       this.confirmButton.on({ click: clickHandler });
-      this.confirmButton.el.insertBefore(this.appendConfirmButtonTargetClass);
+      this.confirmButton.append('insertBefore', this.confirmButtonAppendTargetSelector);
     }
     this.confirmButton.el.addClass('is-show');
   }
