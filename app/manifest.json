@@ -2,6 +2,8 @@
   "name": "__MSG_appName__",
   "version": "0.2.1",
   "manifest_version": 2,
+  "author": "Tennison Chan <tennison.chan+gh@gmail.com>",
+  "homepage_url": "https://github.com/tennisonchan/octomerge",
   "description": "__MSG_appDescription__",
   "icons": {
     "16": "images/octomerge-icon.png",
@@ -21,11 +23,8 @@
     ]
   },
   "permissions": [
-    "tabs",
-    "*://api.github.com/*",
     "*://github.com/*",
-    "http://*/*",
-    "https://*/*",
+    "*://159.203.178.124/*",
     "background",
     "storage"
   ],
