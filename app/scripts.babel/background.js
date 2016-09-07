@@ -52,11 +52,13 @@ function Background(_githubAPI) {
     });
   }
 
-  _runtimeOnConnectHandler.createAutoMerge = function({ pathData }) {
+  _runtimeOnConnectHandler.createAutoMerge = function({ pathData, commit_title, commit_message }) {
+    let { owner, repo, pr_number } = pathData;
+
     $.ajax(`${ENV.HOST}/auto_merges`, {
       type: 'POST',
       dataType: 'json',
-      data: { pathData }
+      data: { pathData, owner, repo, pr_number, commit_title, commit_message }
     });
   }
 

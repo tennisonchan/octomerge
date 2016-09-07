@@ -30,3 +30,15 @@ body {
     text-decoration: underline;
   }
 }
+
+.confirm-button {
+  display: none !important;
+
+  &.is-show {
+    display: inline-block !important;
+
+    &~.btn-group.btn-group-merge,~.btn-group.btn-group-squash {
+      display: none;
+    }
+  }
+}

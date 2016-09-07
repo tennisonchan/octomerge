@@ -68,7 +68,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
           });
         });
       });
-      obs.observe( el, { childList:true, subtree:true });
+      obs.observe( el, { childList: true, subtree: true });
     }
     else if(eventListenerSupported){
       el.addEventListener('DOMNodeInserted', callback, false);
@@ -84,28 +84,31 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
 
     if(_this.isCompletenessIndicatorErrorOrSuccess()) { return false; }
 
-    _this.autoMergeButtonInjecter.inject(function() {
-      let newClickState = !_this.autoMergeButtonInjecter.clicked;
-      _this.autoMergeButtonInjecter.setState({ clicked: newClickState, isOwner: true });
-      _this.statusMessageInjecter.inject('last-try', {
-        lastUpdated: new Date(),
-        toShow: newClickState
-      });
-
-      if (newClickState){
-        _port.postMessage({
-          message: 'createAutoMerge',
-          data: { pathData }
-        });
-      } else {
+    _this.autoMergeButtonInjecter.inject(function(e) {
+      if (_this.autoMergeButtonInjecter.confirmed) {
+        e.stopPropagation();
+        _this.autoMergeButtonInjecter.setState({ confirmed: false, isOwner: true });
+        _this.statusMessageInjecter.inject('last-try', { toShow: false });
         _port.postMessage({
           message: 'cancelAutoMerge',
           data: { pathData }
         });
+      } else {
+        _this.autoMergeButtonInjecter.injectConfirmButton(function() {
+          _this.autoMergeButtonInjecter.setState({ confirmed: true, isOwner: true });
+          _this.statusMessageInjecter.inject('last-try', { lastUpdated: new Date(), toShow: true });
+          _port.postMessage({
+            message: 'createAutoMerge',
+            data: { pathData,
+              commit_title: $('#merge_title_field').val(),
+              commit_message: $('#merge_message_field').val()
+            }
+          });
+        });
       }
     });
 
-    _this.autoMergeButtonInjecter.setState({ clicked: recordExists, isOwner, autoMergeBy });
+    _this.autoMergeButtonInjecter.setState({ confirmed: recordExists, isOwner, autoMergeBy });
     _this.statusMessageInjecter.inject('last-try', {
       lastUpdated,
       toShow: recordExists
