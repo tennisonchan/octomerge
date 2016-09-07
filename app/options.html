@@ -9,25 +9,27 @@
     <link href="styles/main.css" rel="stylesheet">
     <!-- endbuild -->
   </head>
-  <body>
+  <body class='octomerge-option-page'>
     <!-- build:js scripts/options-vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
-    <form>
-      <h2>Access Token</h2>
-      <label>
-        Generate new token on <a href="https://github.com/settings/tokens">Github access tokens</a> page
-      </label>
-      <br/>
-      <br/>
-      <div>
-        <input type="text" placeholder="0abc2af156a5c9fc130bffa035ab85f98ccfe764" id="accessToken" style="width: 250px;" autofocus></input>
-        <button id="save">Save</button>
-      </div>
-    </form>
+    <div class="container">
+      <form>
+        <h2>Access Token</h2>
+        <label>
+          Accessing private repositories requires a access token. Follow <a href="https://github.com/settings/tokens/new">this link</a> to create one and paste it below.
+        </label>
+        <br/>
+        <br/>
+        <div>
+          <input type="text" placeholder="0abc2af156a5c9fc130bffa035ab85f98ccfe764" id="accessToken" style="width: 250px;" autofocus></input>
+          <button id="save">Save</button>
+        </div>
+      </form>
+    </div>
 
     <!-- build:js scripts/options.js -->
     <script src="scripts/options.js"></script>
