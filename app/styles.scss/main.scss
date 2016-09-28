@@ -43,7 +43,7 @@ body {
   &.is-show {
     display: inline-block !important;
 
-    &~.btn-group.btn-group-merge,~.btn-group.btn-group-squash {
+    &~.btn-group-merge,~.btn-group-squash {
       display: none;
     }
   }

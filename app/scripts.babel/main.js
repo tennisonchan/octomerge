@@ -4,7 +4,7 @@ let Main = (function(window, $, moment, AutoMergeButtonInjecter, StatusMessageIn
   let _this = {
     deleteBranchAfterMergedClass: '.post-merge-message button[type=submit]',
     mutationTarget: 'partial-pull-merging',
-    completenessIndicatorErrorOrSuccessClass: '.branch-action-item.js-details-container .completeness-indicator-error, .branch-action-item.js-details-container .completeness-indicator-success',
+    completenessIndicatorErrorOrSuccessClass: '.branch-action-item:nth(1) .completeness-indicator-error, .branch-action-item:nth(1) .completeness-indicator-success',
     deleteBranchMessage: 'Octomerge detects there is an unused branch can be deleted.\n\nDo you want to auto-delete these branches for you in the future? (You can always restore the deleted branches)'
   };
 
